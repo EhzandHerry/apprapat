@@ -18,7 +18,13 @@ class UserService {
       }),
     );
 
-    return jsonDecode(response.body);
+    if (response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else if (response.statusCode == 422) {
+      return {'error': jsonDecode(response.body)};
+    } else {
+      return {'error': 'Failed to register user: ${response.body}'};
+    }
   }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
@@ -28,6 +34,12 @@ class UserService {
       body: jsonEncode({'email': email, 'password': password}),
     );
 
-    return jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      return {'error': 'Invalid credentials'};
+    } else {
+      return {'error': 'Failed to login user: ${response.body}'};
+    }
   }
 }

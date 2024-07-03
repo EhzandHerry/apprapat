@@ -29,7 +29,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       create: (context) => RapatController()..fetchRapats(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('User Home'),
+          title: Text('Halo, jangan lupa rapat bro!'),
           backgroundColor: Colors.blueAccent,
           actions: [
             IconButton(

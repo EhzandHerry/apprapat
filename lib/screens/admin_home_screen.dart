@@ -6,7 +6,14 @@ import 'package:apprapat/models/rapat.dart';
 import 'package:apprapat/screens/rapat_detail.dart';
 import 'package:apprapat/screens/rapat_form.dart';
 
-class AdminHomeScreen extends StatelessWidget {
+class AdminHomeScreen extends StatefulWidget {
+  @override
+  _AdminHomeScreenState createState() => _AdminHomeScreenState();
+}
+
+class _AdminHomeScreenState extends State<AdminHomeScreen> {
+  String searchQuery = '';
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -34,69 +41,97 @@ class AdminHomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Consumer<RapatController>(
-              builder: (context, rapatController, child) {
-                if (rapatController.rapats.isEmpty) {
-                  return Center(child: CircularProgressIndicator());
-                } else {
-                  return ListView.builder(
-                    itemCount: rapatController.rapats.length,
-                    itemBuilder: (context, index) {
-                      final rapat = rapatController.rapats[index];
-                      return Card(
-                        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        elevation: 5,
-                        child: ListTile(
-                          title: Text(
-                            rapat.agenda,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text('${rapat.tanggal} - ${rapat.jam}'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AdminRapatDetailScreen(rapat: rapat),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Search',
+                      hintText: 'Search by Agenda',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: Consumer<RapatController>(
+                    builder: (context, rapatController, child) {
+                      if (rapatController.rapats.isEmpty) {
+                        return Center(child: CircularProgressIndicator());
+                      } else {
+                        final filteredRapats = rapatController.rapats
+                            .where((rapat) =>
+                                rapat.agenda.toLowerCase().contains(searchQuery.toLowerCase()))
+                            .toList();
+                        return ListView.builder(
+                          itemCount: filteredRapats.length,
+                          itemBuilder: (context, index) {
+                            final rapat = filteredRapats[index];
+                            return Card(
+                              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            );
-                          },
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.edit, color: Colors.blueAccent),
-                                onPressed: () {
+                              elevation: 5,
+                              child: ListTile(
+                                title: Text(
+                                  rapat.agenda,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Text('${rapat.tanggal} - ${rapat.jam}'),
+                                onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => RapatFormScreen(rapat: rapat),
+                                      builder: (context) => AdminRapatDetailScreen(rapat: rapat),
                                     ),
                                   );
                                 },
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.edit, color: Colors.blueAccent),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => RapatFormScreen(rapat: rapat),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete, color: Colors.redAccent),
+                                      onPressed: () {
+                                        rapatController.deleteRapat(rapat.id);
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.redAccent),
-                                onPressed: () {
-                                  rapatController.deleteRapat(rapat.id);
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                            );
+                          },
+                        );
+                      }
                     },
-                  );
-                }
-              },
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: ElevatedButton(
           onPressed: () {
             Navigator.push(
               context,
@@ -105,8 +140,14 @@ class AdminHomeScreen extends StatelessWidget {
               ),
             );
           },
-          backgroundColor: Colors.blueAccent,
-          child: Icon(Icons.add),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blueAccent,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: Text('Tambahkan Rapat'),
         ),
       ),
     );

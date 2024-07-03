@@ -1,37 +1,50 @@
+import 'package:apprapat/screens/maps_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:apprapat/controllers/rapat_controller.dart';
 import 'package:apprapat/models/rapat.dart';
-import 'package:intl/intl.dart'; // Tambahkan package ini untuk format tanggal
+import 'package:intl/intl.dart'; 
 
-class RapatFormScreen extends StatelessWidget {
+class RapatFormScreen extends StatefulWidget {
   final Rapat? rapat;
 
   RapatFormScreen({this.rapat});
 
+  @override
+  _RapatFormScreenState createState() => _RapatFormScreenState();
+}
+
+class _RapatFormScreenState extends State<RapatFormScreen> {
   final TextEditingController agendaController = TextEditingController();
   final TextEditingController tanggalController = TextEditingController();
   final TextEditingController jamController = TextEditingController();
-  final TextEditingController lokasiController = TextEditingController();
   final TextEditingController hasilController = TextEditingController();
   final TextEditingController kategoriController = TextEditingController();
+  final TextEditingController lokasiController = TextEditingController();
+
+  String? _lokasi;
 
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
-    if (rapat != null) {
-      agendaController.text = rapat!.agenda;
-      tanggalController.text = rapat!.tanggal;
-      jamController.text = rapat!.jam;
-      lokasiController.text = rapat!.lokasi;
-      hasilController.text = rapat!.hasil ?? '';
-      kategoriController.text = rapat!.kategori;
+  void initState() {
+    super.initState();
+    if (widget.rapat != null) {
+      agendaController.text = widget.rapat!.agenda;
+      tanggalController.text = widget.rapat!.tanggal;
+      jamController.text = widget.rapat!.jam;
+      lokasiController.text = widget.rapat!.lokasi;
+      _lokasi = widget.rapat!.lokasi;
+      hasilController.text = widget.rapat!.hasil ?? '';
+      kategoriController.text = widget.rapat!.kategori;
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(rapat == null ? 'Tambah Rapat' : 'Edit Rapat'),
+        title: Text(widget.rapat == null ? 'Tambah Rapat' : 'Edit Rapat'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Stack(
@@ -60,7 +73,7 @@ class RapatFormScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          rapat == null ? 'Tambah Rapat' : 'Edit Rapat',
+                          widget.rapat == null ? 'Tambah Rapat' : 'Edit Rapat',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -90,7 +103,7 @@ class RapatFormScreen extends StatelessWidget {
                         SizedBox(height: 16),
                         _buildTextFormField(jamController, 'Jam', Icons.access_time, keyboardType: TextInputType.datetime),
                         SizedBox(height: 16),
-                        _buildTextFormField(lokasiController, 'Lokasi', Icons.location_on),
+                        _buildLokasiField(context),
                         SizedBox(height: 16),
                         _buildTextFormField(hasilController, 'Hasil', Icons.notes),
                         SizedBox(height: 16),
@@ -100,21 +113,21 @@ class RapatFormScreen extends StatelessWidget {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               final rapatData = Rapat(
-                                id: rapat?.id ?? 0,
+                                id: widget.rapat?.id ?? 0,
                                 agenda: agendaController.text,
                                 tanggal: tanggalController.text,
                                 jam: jamController.text,
-                                lokasi: lokasiController.text,
+                                lokasi: lokasiController.text.isNotEmpty ? lokasiController.text : _lokasi ?? '',
                                 hasil: hasilController.text,
                                 kategori: kategoriController.text,
                               );
 
-                              if (rapat == null) {
+                              if (widget.rapat == null) {
                                 await Provider.of<RapatController>(context, listen: false)
                                     .createRapat(context, rapatData);
                               } else {
                                 await Provider.of<RapatController>(context, listen: false)
-                                    .updateRapat(context, rapat!.id, rapatData);
+                                    .updateRapat(context, widget.rapat!.id, rapatData);
                               }
                             }
                           },
@@ -125,7 +138,7 @@ class RapatFormScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: Text(rapat == null ? 'Tambah' : 'Update'),
+                          child: Text(widget.rapat == null ? 'Tambah' : 'Update'),
                         ),
                       ],
                     ),
@@ -136,6 +149,39 @@ class RapatFormScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLokasiField(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Lokasi', style: TextStyle(fontSize: 16)),
+        Row(
+          children: [
+            Expanded(
+              child: _buildTextFormField(lokasiController, 'Lokasi', Icons.location_on),
+            ),
+            IconButton(
+              icon: Icon(Icons.map),
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MapScreen(
+                        onLocationSelected: (selectedAddress) {
+                      setState(() {
+                        _lokasi = selectedAddress;
+                        lokasiController.text = selectedAddress;
+                      });
+                    }),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 
