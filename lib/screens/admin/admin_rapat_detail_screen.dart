@@ -31,24 +31,41 @@ class AdminRapatDetailScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Agenda: ${rapat.agenda}', style: TextStyle(fontSize: 18, color: Colors.white)),
-              SizedBox(height: 8),
-              Text('Tanggal: ${rapat.tanggal}', style: TextStyle(fontSize: 18, color: Colors.white)),
-              SizedBox(height: 8),
-              Text('Jam: ${rapat.jam}', style: TextStyle(fontSize: 18, color: Colors.white)),
-              SizedBox(height: 8),
-              Text('Lokasi: ${rapat.lokasi}', style: TextStyle(fontSize: 18, color: Colors.white)),
-              SizedBox(height: 8),
-              Text('Kategori: ${rapat.kategori}', style: TextStyle(fontSize: 18, color: Colors.white)),
-              SizedBox(height: 8),
-              if (rapat.hasil != null)
-                Text('Hasil: ${rapat.hasil}', style: TextStyle(fontSize: 18, color: Colors.white)),
-            ],
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.6),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Agenda: ${rapat.agenda}', style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 8),
+                      Text('Tanggal: ${rapat.tanggal}', style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 8),
+                      Text('Jam: ${rapat.jam}', style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 8),
+                      Text('Lokasi: ${rapat.lokasi}', style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 8),
+                      Text('Kategori: ${rapat.kategori}', style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 8),
+                      if (rapat.hasil != null)
+                        Text('Hasil: ${rapat.hasil}', style: TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

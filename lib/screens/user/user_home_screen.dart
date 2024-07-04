@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:apprapat/controllers/rapat_controller.dart';
 import 'package:apprapat/models/rapat.dart';
-import 'package:apprapat/screens/rapat_detail.dart';
+import 'package:apprapat/screens/user/rapat_detail.dart';
 
 class UserHomeScreen extends StatefulWidget {
   @override
@@ -56,7 +56,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: DropdownButtonFormField<String>(
                     decoration: InputDecoration(
-                      labelText: 'Filter by Category',
+                      labelText: 'Filter by Kategori',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),

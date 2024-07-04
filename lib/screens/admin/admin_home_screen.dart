@@ -1,10 +1,10 @@
-import 'package:apprapat/screens/admin_rapat_detail_screen.dart';
+import 'package:apprapat/screens/admin/admin_rapat_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:apprapat/controllers/rapat_controller.dart';
 import 'package:apprapat/models/rapat.dart';
-import 'package:apprapat/screens/rapat_detail.dart';
-import 'package:apprapat/screens/rapat_form.dart';
+import 'package:apprapat/screens/user/rapat_detail.dart';
+import 'package:apprapat/screens/admin/rapat_form.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   @override

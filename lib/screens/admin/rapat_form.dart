@@ -1,9 +1,9 @@
-import 'package:apprapat/screens/maps_screen.dart';
+import 'package:apprapat/widgets/maps_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:apprapat/controllers/rapat_controller.dart';
 import 'package:apprapat/models/rapat.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 
 class RapatFormScreen extends StatefulWidget {
   final Rapat? rapat;
@@ -101,7 +101,23 @@ class _RapatFormScreenState extends State<RapatFormScreen> {
                           ],
                         ),
                         SizedBox(height: 16),
-                        _buildTextFormField(jamController, 'Jam', Icons.access_time, keyboardType: TextInputType.datetime),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextFormField(
+                                jamController,
+                                'Jam',
+                                Icons.access_time,
+                                readOnly: true,
+                                onTap: () => _selectTime(context),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.access_time),
+                              onPressed: () => _selectTime(context),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: 16),
                         _buildLokasiField(context),
                         SizedBox(height: 16),
@@ -194,6 +210,18 @@ class _RapatFormScreenState extends State<RapatFormScreen> {
     );
     if (selected != null) {
       tanggalController.text = DateFormat('yyyy-MM-dd').format(selected);
+    }
+  }
+
+  void _selectTime(BuildContext context) async {
+    final TimeOfDay? selected = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (selected != null) {
+      final now = DateTime.now();
+      final selectedDateTime = DateTime(now.year, now.month, now.day, selected.hour, selected.minute);
+      jamController.text = DateFormat('HH:mm:ss').format(selectedDateTime);
     }
   }
 

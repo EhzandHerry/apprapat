@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:apprapat/screens/admin_home_screen.dart';
+import 'package:apprapat/screens/admin/admin_home_screen.dart';
 import 'package:apprapat/screens/login_screen.dart';
 import 'package:apprapat/screens/register_screen.dart';
 import 'package:apprapat/controllers/rapat_controller.dart';
-import 'package:apprapat/screens/user_home_screen.dart';
+import 'package:apprapat/screens/user/user_home_screen.dart';
 
 void main() {
   runApp(MyApp());
